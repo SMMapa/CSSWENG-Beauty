@@ -3,7 +3,7 @@
 ### How to Run the Application Locally
 1.  Clone the git repo, through GitHub or terminal by running the ff:
     ```bash
-    git clone -b local --single-branch https://github.com/ryaexn/TheScoop2.git
+    git clone -b local --single-branch https://github.com/SMMapa/CSSWENG-Beauty.git
     ```
 2.  Navigate to the Project Directory 
     ```bash
