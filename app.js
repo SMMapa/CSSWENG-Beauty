@@ -23,6 +23,11 @@ function initializeHandlebars(){
     app.set("views", "./src/views");
 }
 
+async function finalClose(){
+    await disconnect().then(console.log('Server closed!'));
+    process.exit();
+}
+
 async function main(){
 
     initializeStaticFiles();
@@ -34,9 +39,20 @@ async function main(){
 
     app.listen(process.env.SERVER_PORT, async () => {
         console.log(`Express server is now listening on port ${process.env.SERVER_PORT}`);
+        try {
+            
+            await connect();
+            console.log(`Now connected to MongoDB`);
+            
+        } catch (err) {
+            console.log('Connection to MongoDB Server failed:');
+            console.error(err);
+        }
     });
 
-
+    process.on('SIGTERM',finalClose);  
+    process.on('SIGINT', finalClose); 
+    process.on('SIGQUIT', finalClose);
 }
 
 main();
