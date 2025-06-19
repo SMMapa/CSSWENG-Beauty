@@ -17,5 +17,5 @@
     ```bash
         node app.js
     ```
-4. Make sure you have an .env file with `PORT_NUMBER`
+4. Make sure you have an .env file with `SERVER_PORT`
 5. Open localhost with the correpsonding port number 
