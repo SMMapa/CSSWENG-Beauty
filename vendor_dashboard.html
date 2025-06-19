@@ -4,31 +4,186 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Brand X Dashboard</title>
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts - Poppins -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Poppins', sans-serif;
             background-color: #f0f2f5;
         }
+
+        /* Base styles for product card */
+        .product-card {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); /* Slightly faster, smoother transition */
+            overflow: hidden; /* Hide overflow content during collapse */
+            box-sizing: border-box; /* Include padding and border in the element's total width and height */
+        }
+
+        /* Styles for the expanded product card */
+        .product-card.expanded {
+            min-height: 250px;
+            grid-column: 1 / -1; /* Span full width of the grid */
+            flex-direction: row; /* Change to horizontal layout */
+            align-items: start; /* Align items to the start vertically */
+            padding: 1.5rem; /* Adjust padding for expanded view */
+            background-color: #ffffff; /* Ensure white background */
+            position: relative;
+            transform: scale(1.01); /* Slightly less aggressive growth on expand */
+            box-shadow: 0 15px 20px -5px rgba(0, 0, 0, 0.1), 0 8px 8px -4px rgba(0, 0, 0, 0.04); /* Slightly toned down shadow */
+            z-index: 10; /* Bring to front */
+            cursor: default; /* Change cursor on expanded */
+        }
+
+        .product-card.expanded:hover {
+            transform: scale(1.01); /* Maintain transform on expanded hover */
+            box-shadow: 0 15px 20px -5px rgba(0, 0, 0, 0.1), 0 8px 8px -4px rgba(0, 0, 0, 0.04);
+        }
+
+        .product-card.expanded img {
+            width: 200px; /* Fixed width for the image in expanded view */
+            height: 150px; /* Fixed height for the image */
+            min-width: 200px; /* Prevent image from shrinking */
+            margin-right: 1.5rem; /* Space between image and text */
+            margin-bottom: 0; /* Reset bottom margin */
+            object-fit: cover; /* Ensure image covers the area */
+            border-radius: 0.75rem; /* Rounded corners for image */
+            /* transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); */
+        }
+
+        .product-card.expanded .product-info {
+            text-align: left; /* Align text to the left */
+            flex-grow: 1; /* Allow info section to take available space */
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .product-card.expanded .product-details-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr)); /* Two columns for details */
+            gap: 0.5rem 1rem; /* Smaller gap for detail pairs */
+            margin-top: 1rem;
+            color: #4a5568; /* Tailwind gray-700 equivalent */
+            font-size: 0.9rem; /* Smaller font size for details */
+            transition: opacity 0.3s ease-in-out 0.2s; /* Fade in with a delay */
+            opacity: 1; /* Make visible when expanded */
+
+            max-height: 200px; /* Max height for transition */
+        }
+
+        .product-card.expanded .product-details-grid .detail-label {
+            font-weight: 500; /* Medium font weight for labels */
+            color: #718096; /* Tailwind gray-500 equivalent */
+        }
+
+        .product-card.expanded .product-details-grid .detail-value {
+            color: #2d3748; /* Tailwind gray-800 equivalent */
+        }
+
+        .product-card.expanded .warning-icon {
+            opacity: 0; /* Fade out warning icon */
+            pointer-events: none; /* Make it unclickable */
+            transition: opacity 0.3s ease-out;
+        }
+
+        .product-card.expanded .product-stock {
+            opacity: 0; /* Fade out stock info */
+            height: 0; /* Collapse height */
+            margin-bottom: 0; /* Remove margin */
+            overflow: hidden;
+            transition: opacity 0.3s ease-out, height 0.3s ease-out, margin-bottom 0.3s ease-out;
+        }
+
+        .product-details {
+            opacity: 0; /* Start hidden for animation */
+            max-height: 0; /* Collapse for transition */
+            overflow: hidden;
+            transition: opacity 0.3s ease-in-out, max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1); /* Combined transition */
+        }
+        /* Specific state for details when hiding */
+        .product-details.hiding {
+            max-height: 0 !important; /* Force collapse height first */
+            opacity: 0 !important; /* Then fade out */
+        }
+
+        /* New: Low stock message when expanded */
+        .low-stock-message {
+            position: absolute;
+            top: 180px;
+            opacity: 0; /* Initially hidden */
+            max-height: 0; /* Collapse height */
+            overflow: hidden;
+            margin-top: 0;
+            transition: opacity 0.3s ease-in-out, max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), margin-top 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .product-card.expanded .low-stock-message {
+            opacity: 1; /* Show when expanded */
+            max-height: 50px; /* Sufficient height to show content */
+            margin-top: 1rem; /* Space below image */
+        }
+
+
+        /* Parent grid adjustment when a card is expanded */
+        .product-grid-container.has-expanded-card {
+            grid-template-columns: 1fr; /* Simplify grid when one is expanded */
+        }
+
+        /* Other cards in the grid when one is expanded (toned down) */
+        .product-grid-container.has-expanded-card .product-card:not(.expanded) {
+            opacity: 0.5; /* Dim other cards, less opaque than before */
+            pointer-events: none; /* Disable interaction with other cards */
+            transform: scale(0.98); /* Slightly shrink other cards, less aggressive */
+            box-shadow: none; /* Remove shadow from other cards */
+            /* Removed blur for a softer effect */
+        }
+
+        /* Close button for expanded card */
+        .close-button {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background-color: #f0f0f0;
+            border-radius: 50%;
+            padding: 0.5rem;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out;
+            z-index: 11;
+        }
+
+        .close-button:hover {
+            background-color: #e0e0e0;
+            transform: scale(1.1);
+        }
+
+        /* Responsive adjustments for expanded card */
+        @media (min-width: 640px) { /* sm */
+            .product-card.expanded {
+                grid-column: span 2;
+            }
+        }
+
+        @media (min-width: 1024px) { /* lg */
+            .product-card.expanded {
+                grid-column: span 3;
+            }
+        }
+
+        @media (min-width: 1280px) { /* xl */
+            .product-card.expanded {
+                grid-column: span 4;
+            }
+        }
     </style>
 </head>
 <body class="flex min-h-screen">
 
-    <!-- Vertical Sidebar -->
     <aside class="w-64 bg-[#6E5F61] text-white p-4 flex flex-col shadow-lg sticky top-0 min-h-screen">
-        <!-- Logo/Brand Name -->
         <div class="flex items-center mb-8 px-3 py-2">
             <span class="text-2xl font-bold">SimplyBeautyPH</span>
         </div>
 
-        <!-- Navigation Links -->
         <nav class="flex-grow">
             <ul class="space-y-2">
                 <li>
-                    <!-- Brand X with profile icon -->
                     <a href="#" class="flex items-center p-3 rounded-xl hover:bg-[#5C4F51] transition-colors duration-200">
                         <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
@@ -37,7 +192,6 @@
                     </a>
                 </li>
                 <li>
-                    <!-- Dashboard item -->
                     <a href="#" class="flex items-center p-3 rounded-xl hover:bg-[#5C4F51] transition-colors duration-200">
                         <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/>
@@ -46,17 +200,15 @@
                     </a>
                 </li>
                 <li>
-                    <!-- All Products item -->
                     <a href="#" class="flex items-center p-3 rounded-xl bg-[#5C4F51] shadow-md">
                         <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/>
                         </svg>
                         <span class="font-medium">All Products</span>
-                        <span class="ml-auto text-xs opacity-75">88</span>
+                        <span class="ml-auto text-xs opacity-75">7</span>
                     </a>
                 </li>
                 <li>
-                    <!-- Sales Reports item -->
                     <a href="#" class="flex items-center p-3 rounded-xl hover:bg-[#5C4F51] transition-colors duration-200">
                         <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M10 20h4V4h-4v16zm-6 0h4v-8H4v8zM16 9v11h4V9h-4z"/>
@@ -67,14 +219,12 @@
             </ul>
         </nav>
 
-        <!-- Bottom Links - Adjusted margin-top to bring it up -->
         <div class="mt-8 pt-4 space-y-2 border-t border-[#5C4F51]">
             <ul>
                 <li>
-                    <!-- Account icon changed to gear/screw -->
                     <a href="#" class="flex items-center p-3 rounded-xl hover:bg-[#5C4F51] transition-colors duration-200">
                         <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.52.42l-.38 2.65c-.61.25-1.17.58-1.69.98l-2.49-1c-.22-.09-.49 0-.61.22l-2 3.46c-.12.22-.07.49.12.64l2.11 1.65c-.04.32-.07.64-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.06.24.27.42.52.42h4c.25 0 .46-.18.52-.42l.38-2.65c.61-.25 1.17-.58 1.69-.98l2.49 1c.22.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/>
+                            <path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.52.42l-.38 2.65c-.61.25-1.17.58-1.69.98l-2.49-1c-.22-.09-.49 0-.61.22l-2 3.46c-.12.22-.07.49.12.64l2.11 1.65c-.04.32-.07.64-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24-.42-.12-.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.06.24.27.42.52.42h4c.25 0 .46-.18.52-.42l-.38-2.65c.61-.25 1.17-.58 1.69-.98l2.49 1c.22.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/>
                         </svg>
                         <span class="font-medium">Account</span>
                     </a>
@@ -88,7 +238,6 @@
                     </a>
                 </li>
                 <li>
-                    <!-- About icon (empty for now) -->
                     <a href="#" class="flex items-center p-3 rounded-xl hover:bg-[#5C4F51] transition-colors duration-200">
                         <svg class="w-5 h-5 mr-3 opacity-0" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm0-4h-2V7h2v8z"/>
@@ -100,9 +249,7 @@
         </div>
     </aside>
 
-    <!-- Main Content Area -->
     <main class="flex-1 p-8">
-        <!-- Header Section -->
         <header class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
             <h1 class="text-3xl font-semibold text-gray-800 mb-4 sm:mb-0">Brand X</h1>
             <div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4 w-full sm:w-auto">
@@ -115,7 +262,6 @@
             </div>
         </header>
 
-        <!-- Search and Summary Section -->
         <section class="bg-white p-6 rounded-2xl shadow-md mb-6">
             <div class="flex flex-col md:flex-row md:items-center justify-between mb-4 space-y-4 md:space-y-0">
                 <div class="relative flex-grow mr-0 md:mr-4">
@@ -124,7 +270,6 @@
                         <path d="M15.5 14h-.79l-.28-.27C14.1 12.59 14.5 11.11 14.5 9.5 14.5 6.04 11.46 3 8 3S1.5 6.04 1.5 9.5c0 3.46 3.04 6.5 6.5 6.5 1.61 0 3.09-.39 4.33-1.07l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
                     </svg>
                 </div>
-                <!-- Sorting criteria dropdown with hardcoded up/down arrows in options -->
                 <div class="flex items-center space-x-2 text-gray-700">
                     <span class="mr-2">Sort by:</span>
                     <select class="px-3 py-1 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6E5F61]">
@@ -143,65 +288,95 @@
             </div>
         </section>
 
-        <!-- Product Grid Section -->
-        <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-6">
-            <!-- Product Card 1 - Updated for low stock, warning icon with more shadow and tooltip -->
-            <div class="relative bg-white p-4 rounded-2xl shadow-md flex flex-col items-center text-center cursor-pointer hover:-translate-y-1 hover:shadow-xl transition-all duration-300">
+        <section id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-6">
+            <div class="product-card relative bg-white p-4 rounded-2xl shadow-md flex flex-col items-center text-center cursor-pointer hover:-translate-y-1 hover:shadow-xl transition-all duration-300" onclick="toggleProductDetails(this)">
                 <img src="https://placehold.co/200x150/e0e0e0/000000?text=Product+Image+1" alt="Hair Product 1" class="rounded-xl mb-3 object-cover w-full h-36">
-                <h3 class="font-semibold text-gray-800 text-lg mb-1">Volumizing Shampoo</h3>
-                <p class="text-gray-600 text-sm">Stock: 1</p>
-                <!-- Warning icon for low stock with increased shadow and tooltip -->
-                <div class="absolute top-2 right-2 bg-yellow-400 p-1.5 rounded-full shadow-lg" title="Warning: Low Stock!">
+                <div class="low-stock-message bg-yellow-400 text-gray-900 font-semibold px-4 py-2 rounded-lg text-sm text-center w-full max-w-[200px]">
+                    Low Stock!
+                </div>
+                <div class="product-info w-full">
+                    <h3 class="font-semibold text-gray-800 text-lg mb-1">Volumizing Shampoo</h3>
+                    <p class="text-gray-600 text-sm mb-2 product-stock">Stock: 1</p>
+                    <div class="product-details">
+                        <p class="text-gray-700 text-sm mb-3">
+                            Now with next generation color protecting technologies, the Açai Anti-Frizz Conditioner infuses the hair with vital moisture and nutrients needed to maintain smooth, strong strands while keeping your treatment and color looking salon fresh. An exclusive Brazilian Super-Nutrient Complex fortifies and repairs the hair while locking in moisture and locking out humidity. The end result is soft, frizz-free, radiant hair and noticeably better retention of the Brazilian Blowout treatment and color services*.
+                        </p>
+                        <div class="product-details-grid">
+                            <p><span class="detail-label">Brand:</span> <span class="detail-value">Brand X</span></p>
+                            <p><span class="detail-label">Category:</span> <span class="detail-value">Shampoo</span></p>
+                            <p><span class="detail-label">SKU:</span> <span class="detail-value">SHS-VOL-001</span></p>
+                            <p><span class="detail-label">Price:</span> <span class="detail-value">₱1200.00</span></p>
+                            <p><span class="detail-label">Stock:</span> <span class="detail-value">1 unit</span></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="warning-icon absolute top-2 right-2 bg-yellow-400 p-1.5 rounded-full shadow-lg" title="Warning: Low Stock!">
                     <svg class="w-5 h-5 text-yellow-800" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>
                     </svg>
                 </div>
+                <div class="close-button hidden" onclick="event.stopPropagation(); toggleProductDetails(this.closest('.product-card'))">
+                    <svg class="w-5 h-5 text-gray-600" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                    </svg>
+                </div>
             </div>
 
-            <!-- Product Card 2 -->
-            <div class="bg-white p-4 rounded-2xl shadow-md flex flex-col items-center text-center cursor-pointer hover:-translate-y-1 hover:shadow-xl transition-all duration-300">
+            <div class="product-card bg-white p-4 rounded-2xl shadow-md flex flex-col items-center text-center cursor-pointer hover:-translate-y-1 hover:shadow-xl transition-all duration-300">
                 <img src="https://placehold.co/200x150/e0e0e0/000000?text=Product+Image+2" alt="Hair Product 2" class="rounded-xl mb-3 object-cover w-full h-36">
+                <div class="low-stock-message bg-yellow-400 text-gray-900 font-semibold px-4 py-2 rounded-lg text-sm text-center w-full max-w-[200px]">
+                    Low Stock!
+                </div>
                 <h3 class="font-semibold text-gray-800 text-lg mb-1">Hydrating Conditioner</h3>
                 <p class="text-gray-600 text-sm">Stock: 187650</p>
             </div>
 
-            <!-- Product Card 3 -->
-            <div class="bg-white p-4 rounded-2xl shadow-md flex flex-col items-center text-center cursor-pointer hover:-translate-y-1 hover:shadow-xl transition-all duration-300">
+            <div class="product-card bg-white p-4 rounded-2xl shadow-md flex flex-col items-center text-center cursor-pointer hover:-translate-y-1 hover:shadow-xl transition-all duration-300">
                 <img src="https://placehold.co/200x150/e0e0e0/000000?text=Product+Image+3" alt="Hair Product 3" class="rounded-xl mb-3 object-cover w-full h-36">
+                <div class="low-stock-message bg-yellow-400 text-gray-900 font-semibold px-4 py-2 rounded-lg text-sm text-center w-full max-w-[200px]">
+                    Low Stock!
+                </div>
                 <h3 class="font-semibold text-gray-800 text-lg mb-1">Leave-in Treatment</h3>
                 <p class="text-gray-600 text-sm">Stock: 98765</p>
             </div>
 
-            <!-- Product Card 4 -->
-            <div class="bg-white p-4 rounded-2xl shadow-md flex flex-col items-center text-center cursor-pointer hover:-translate-y-1 hover:shadow-xl transition-all duration-300">
+            <div class="product-card bg-white p-4 rounded-2xl shadow-md flex flex-col items-center text-center cursor-pointer hover:-translate-y-1 hover:shadow-xl transition-all duration-300">
                 <img src="https://placehold.co/200x150/e0e0e0/000000?text=Product+Image+4" alt="Hair Product 4" class="rounded-xl mb-3 object-cover w-full h-36">
+                <div class="low-stock-message bg-yellow-400 text-gray-900 font-semibold px-4 py-2 rounded-lg text-sm text-center w-full max-w-[200px]">
+                    Low Stock!
+                </div>
                 <h3 class="font-semibold text-gray-800 text-lg mb-1">Hair Styling Gel</h3>
                 <p class="text-gray-600 text-sm">Stock: 123456</p>
             </div>
 
-            <!-- Product Card 5 -->
-            <div class="bg-white p-4 rounded-2xl shadow-md flex flex-col items-center text-center cursor-pointer hover:-translate-y-1 hover:shadow-xl transition-all duration-300">
+            <div class="product-card bg-white p-4 rounded-2xl shadow-md flex flex-col items-center text-center cursor-pointer hover:-translate-y-1 hover:shadow-xl transition-all duration-300">
                 <img src="https://placehold.co/200x150/e0e0e0/000000?text=Product+Image+5" alt="Hair Product 5" class="rounded-xl mb-3 object-cover w-full h-36">
+                <div class="low-stock-message bg-yellow-400 text-gray-900 font-semibold px-4 py-2 rounded-lg text-sm text-center w-full max-w-[200px]">
+                    Low Stock!
+                </div>
                 <h3 class="font-semibold text-gray-800 text-lg mb-1">Deep Repair Mask</h3>
                 <p class="text-gray-600 text-sm">Stock: 54321</p>
             </div>
 
-            <!-- Product Card 6 -->
-            <div class="bg-white p-4 rounded-2xl shadow-md flex flex-col items-center text-center cursor-pointer hover:-translate-y-1 hover:shadow-xl transition-all duration-300">
+            <div class="product-card bg-white p-4 rounded-2xl shadow-md flex flex-col items-center text-center cursor-pointer hover:-translate-y-1 hover:shadow-xl transition-all duration-300">
                 <img src="https://placehold.co/200x150/e0e0e0/000000?text=Product+Image+6" alt="Hair Product 6" class="rounded-xl mb-3 object-cover w-full h-36">
+                <div class="low-stock-message bg-yellow-400 text-gray-900 font-semibold px-4 py-2 rounded-lg text-sm text-center w-full max-w-[200px]">
+                    Low Stock!
+                </div>
                 <h3 class="font-semibold text-gray-800 text-lg mb-1">Hair Growth Serum</h3>
                 <p class="text-gray-600 text-sm">Stock: 8765</p>
             </div>
 
-            <!-- Product Card 7 -->
-            <div class="bg-white p-4 rounded-2xl shadow-md flex flex-col items-center text-center cursor-pointer hover:-translate-y-1 hover:shadow-xl transition-all duration-300">
+            <div class="product-card bg-white p-4 rounded-2xl shadow-md flex flex-col items-center text-center cursor-pointer hover:-translate-y-1 hover:shadow-xl transition-all duration-300">
                 <img src="https://placehold.co/200x150/e0e0e0/000000?text=Product+Image+7" alt="Hair Product 7" class="rounded-xl mb-3 object-cover w-full h-36">
+                <div class="low-stock-message bg-yellow-400 text-gray-900 font-semibold px-4 py-2 rounded-lg text-sm text-center w-full max-w-[200px]">
+                    Low Stock!
+                </div>
                 <h3 class="font-semibold text-gray-800 text-lg mb-1">Heat Protectant Spray</h3>
                 <p class="text-gray-600 text-sm">Stock: 34567</p>
             </div>
         </section>
 
-        <!-- Pagination/Show per page -->
         <section class="flex justify-end items-center mb-6">
             <span class="text-gray-600 text-sm mr-2">Show</span>
             <select class="px-3 py-1 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6E5F61]">
@@ -214,7 +389,6 @@
 
     </main>
 
-    <!-- Help Button (Fixed) -->
     <button class="fixed bottom-6 right-6 bg-[#6E5F61] text-white rounded-full p-4 shadow-lg hover:bg-[#5C4F51] transition-colors duration-200 flex items-center justify-center">
         <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
             <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm0-4h-2V7h2v8z"/>
@@ -222,5 +396,119 @@
         <span class="ml-2 hidden lg:inline">Help</span>
     </button>
 
+    <script>
+        let expandedCard = null; // To keep track of the currently expanded card
+        const LOW_STOCK_THRESHOLD = 5; // Define your low stock threshold here
+
+        function toggleProductDetails(cardElement) {
+            const productDetails = cardElement.querySelector('.product-details');
+            const productStockElement = cardElement.querySelector('.product-stock');
+            const warningIcon = cardElement.querySelector('.warning-icon');
+            const closeButton = cardElement.querySelector('.close-button');
+            const productGrid = document.getElementById('product-grid');
+            const allProductCards = document.querySelectorAll('.product-card');
+            const lowStockMessage = cardElement.querySelector('.low-stock-message');
+
+            // Safely get the stock value, assuming format "Stock: X"
+            const stockText = productStockElement ? productStockElement.textContent : '';
+            const stockMatch = stockText.match(/Stock:\s*(\d+)/);
+            const stockValue = stockMatch ? parseInt(stockMatch[1], 10) : 0;
+            const isLowStock = stockValue <= LOW_STOCK_THRESHOLD;
+
+            if (cardElement.classList.contains('expanded')) {
+                // Card is currently expanded, so collapse it
+
+                // Hide detailed info first (collapse height, then fade out)
+                productDetails.style.maxHeight = '0';
+                productDetails.style.marginTop = '0';
+                productDetails.style.opacity = '0';
+                productDetails.classList.add('hiding');
+
+                // Hide low stock message if it was visible
+                lowStockMessage.style.opacity = '0';
+                lowStockMessage.style.maxHeight = '0';
+                lowStockMessage.style.marginTop = '0';
+
+                // Animate out the main card changes and bring back others
+                setTimeout(() => {
+                    cardElement.classList.remove('expanded');
+                    productGrid.classList.remove('has-expanded-card');
+                    closeButton.classList.add('hidden');
+
+                    // Show stock and warning icon (if applicable)
+                    productStockElement.classList.remove('hidden');
+                    if (warningIcon) warningIcon.classList.remove('hidden');
+                    productStockElement.style.opacity = '1';
+                    productStockElement.style.height = 'auto'; // Revert height
+                    productStockElement.style.marginBottom = '0.5rem'; // Revert margin
+
+                    // Revert other cards
+                    allProductCards.forEach(otherCard => {
+                        if (otherCard !== cardElement) {
+                            otherCard.classList.remove('dimmed');
+                            otherCard.style.pointerEvents = 'auto';
+                        }
+                    });
+
+                    // Remove hiding class after all transitions are complete
+                    productDetails.classList.remove('hiding');
+
+                }, 300); // This delay should match or be slightly less than productDetails max-height transition
+
+                expandedCard = null; // Reset expanded card tracker
+
+            } else {
+                // Collapse any previously expanded card first
+                if (expandedCard && expandedCard !== cardElement) {
+                    toggleProductDetails(expandedCard);
+                }
+
+                // Expand the clicked card
+
+                // Dim and disable other cards instantly for immediate feedback
+                allProductCards.forEach(otherCard => {
+                    if (otherCard !== cardElement) {
+                        otherCard.classList.add('dimmed');
+                        otherCard.style.pointerEvents = 'none';
+                    }
+                });
+
+                // Add expanded classes to the main card and grid
+                cardElement.classList.add('expanded');
+                productGrid.classList.add('has-expanded-card');
+                closeButton.classList.remove('hidden');
+
+                // Hide original elements (stock, warning)
+                productStockElement.style.opacity = '0';
+                productStockElement.style.height = '0';
+                productStockElement.style.marginBottom = '0';
+                if (warningIcon) warningIcon.classList.add('hidden'); // Fully hide warning icon immediately
+
+                // Show low stock message if applicable
+                if (isLowStock) {
+                    setTimeout(() => {
+                        lowStockMessage.style.opacity = '1';
+                        lowStockMessage.style.maxHeight = lowStockMessage.scrollHeight + 'px'; // Set to actual height
+                        lowStockMessage.style.marginTop = '1rem';
+                    }, 200); // Delay for showing low stock message
+                } else {
+                    // Ensure it's hidden if not low stock
+                    lowStockMessage.style.opacity = '0';
+                    lowStockMessage.style.maxHeight = '0';
+                    lowStockMessage.style.marginTop = '0';
+                }
+
+                // Animate in details with a slight delay after card has started expanding
+                setTimeout(() => {
+                    productDetails.style.maxHeight = productDetails.scrollHeight + 'px'; // Set to actual height
+                    productDetails.style.marginTop = '1rem'; // Add margin
+                    productDetails.style.opacity = '1';
+                    productDetails.classList.remove('hiding'); // Ensure no hiding styles remain
+                }, 200); // Start fading in details after a short delay
+
+                expandedCard = cardElement; // Set the currently expanded card
+            }
+        }
+    </script>
 </body>
 </html>

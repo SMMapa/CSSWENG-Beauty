@@ -6,6 +6,8 @@ const exphbs = require('express-handlebars');
 const path = require('path');
 
 const router = require('./src/routes/router.js');
+const { connect, disconnect }= require('./src/models/db.js');
+
 const app = express();
 
 function initializeStaticFiles(){

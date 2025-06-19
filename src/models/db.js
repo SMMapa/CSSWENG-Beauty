@@ -3,15 +3,16 @@ const Product = require('./Product');
 const Category = require('./Category');
 const ProductStorage = require('./ProductStorage');
 const Storage = require('./Storage');
-
 const User = require('./User');
 
 async function connect() {
 
   try{
     await mongoose.connect(process.env.MONGODB_URI);
-    mongoose.model('Review', Review.schema);
-    mongoose.model('Restaurant', Restaurant.schema);
+    mongoose.model('Product', Product.schema);
+    mongoose.model('Category', Category.schema);
+    mongoose.model('ProductStorage', ProductStorage.schema);
+    mongoose.model('Storage', Storage.schema);
     mongoose.model('User', User.schema);
   } catch(err){
     console.log("Error connecting to db");
@@ -23,6 +24,5 @@ async function connect() {
 async function disconnect(){
     await mongoose.connection.close();
 }
-
 
 module.exports = {connect, disconnect};
