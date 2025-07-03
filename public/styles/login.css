@@ -1,3 +1,33 @@
+@import url('https://fonts.googleapis.com/css2?family=Dosis:wght@200..800&display=swap');
+root {
+    font-family: 'Dosis';
+}
+
 h2 {
-    font-family: 'Courier New', Courier, monospace;
+    text-align: center;
+}
+
+#content {
+    margin: auto;
+    display: flex;
+    width: 60%;
+    flex-direction: column;
+}
+
+#logo {
+    margin: auto;
+}
+
+#data-pane {
+
+    margin: auto;
+    font-family: 'Dosis';
+}
+
+
+#submit {
+    background-color: #6A5555;
+    color: white;
+    text-align: center;
+    padding: 1%;
 }
