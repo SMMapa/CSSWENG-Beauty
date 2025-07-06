@@ -1,0 +1,165 @@
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f0f2f5;
+}
+
+/* Base styles for product card */
+.product-card {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); /* Slightly faster, smoother transition */
+    overflow: hidden; /* Hide overflow content during collapse */
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+}
+
+/* Styles for the expanded product card */
+.product-card.expanded {
+    min-height: 250px;
+    grid-column: 1 / -1; /* Span full width of the grid */
+    flex-direction: row; /* Change to horizontal layout */
+    align-items: start; /* Align items to the start vertically */
+    padding: 1.5rem; /* Adjust padding for expanded view */
+    background-color: #ffffff; /* Ensure white background */
+    position: relative;
+    transform: scale(1.01); /* Slightly less aggressive growth on expand */
+    box-shadow: 0 15px 20px -5px rgba(0, 0, 0, 0.1), 0 8px 8px -4px rgba(0, 0, 0, 0.04); /* Slightly toned down shadow */
+    z-index: 10; /* Bring to front */
+    cursor: default; /* Change cursor on expanded */
+}
+
+.product-card.expanded:hover {
+    transform: scale(1.01); /* Maintain transform on expanded hover */
+    box-shadow: 0 15px 20px -5px rgba(0, 0, 0, 0.1), 0 8px 8px -4px rgba(0, 0, 0, 0.04);
+}
+
+.product-card.expanded img {
+    width: 200px; /* Fixed width for the image in expanded view */
+    height: 150px; /* Fixed height for the image */
+    min-width: 200px; /* Prevent image from shrinking */
+    margin-right: 1.5rem; /* Space between image and text */
+    margin-bottom: 0; /* Reset bottom margin */
+    object-fit: cover; /* Ensure image covers the area */
+    border-radius: 0.75rem; /* Rounded corners for image */
+    /* transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); */
+}
+
+.product-card.expanded .product-info {
+    text-align: left; /* Align text to the left */
+    flex-grow: 1; /* Allow info section to take available space */
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.product-card.expanded .product-details-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr)); /* Two columns for details */
+    gap: 0.5rem 1rem; /* Smaller gap for detail pairs */
+    margin-top: 1rem;
+    color: #4a5568; /* Tailwind gray-700 equivalent */
+    font-size: 0.9rem; /* Smaller font size for details */
+    transition: opacity 0.3s ease-in-out 0.2s; /* Fade in with a delay */
+    opacity: 1; /* Make visible when expanded */
+
+    max-height: 200px; /* Max height for transition */
+}
+
+.product-card.expanded .product-details-grid .detail-label {
+    font-weight: 500; /* Medium font weight for labels */
+    color: #718096; /* Tailwind gray-500 equivalent */
+}
+
+.product-card.expanded .product-details-grid .detail-value {
+    color: #2d3748; /* Tailwind gray-800 equivalent */
+}
+
+.product-card.expanded .warning-icon {
+    opacity: 0; /* Fade out warning icon */
+    pointer-events: none; /* Make it unclickable */
+    transition: opacity 0.3s ease-out;
+}
+
+.product-card.expanded .product-stock {
+    opacity: 0; /* Fade out stock info */
+    height: 0; /* Collapse height */
+    margin-bottom: 0; /* Remove margin */
+    overflow: hidden;
+    transition: opacity 0.3s ease-out, height 0.3s ease-out, margin-bottom 0.3s ease-out;
+}
+
+.product-details {
+    opacity: 0; /* Start hidden for animation */
+    max-height: 0; /* Collapse for transition */
+    overflow: hidden;
+    transition: opacity 0.3s ease-in-out, max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1); /* Combined transition */
+}
+/* Specific state for details when hiding */
+.product-details.hiding {
+    max-height: 0 !important; /* Force collapse height first */
+    opacity: 0 !important; /* Then fade out */
+}
+
+/* New: Low stock message when expanded */
+.low-stock-message {
+    position: absolute;
+    top: 180px;
+    opacity: 0; /* Initially hidden */
+    max-height: 0; /* Collapse height */
+    overflow: hidden;
+    margin-top: 0;
+    transition: opacity 0.3s ease-in-out, max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), margin-top 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.product-card.expanded .low-stock-message {
+    opacity: 1; /* Show when expanded */
+    max-height: 50px; /* Sufficient height to show content */
+    margin-top: 1rem; /* Space below image */
+}
+
+
+/* Parent grid adjustment when a card is expanded */
+.product-grid-container.has-expanded-card {
+    grid-template-columns: 1fr; /* Simplify grid when one is expanded */
+}
+
+/* Other cards in the grid when one is expanded (toned down) */
+.product-grid-container.has-expanded-card .product-card:not(.expanded) {
+    opacity: 0.5; /* Dim other cards, less opaque than before */
+    pointer-events: none; /* Disable interaction with other cards */
+    transform: scale(0.98); /* Slightly shrink other cards, less aggressive */
+    box-shadow: none; /* Remove shadow from other cards */
+    /* Removed blur for a softer effect */
+}
+
+/* Close button for expanded card */
+.close-button {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background-color: #f0f0f0;
+    border-radius: 50%;
+    padding: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out;
+    z-index: 11;
+}
+
+.close-button:hover {
+    background-color: #e0e0e0;
+    transform: scale(1.1);
+}
+
+/* Responsive adjustments for expanded card */
+@media (min-width: 640px) { /* sm */
+    .product-card.expanded {
+        grid-column: span 2;
+    }
+}
+
+@media (min-width: 1024px) { /* lg */
+    .product-card.expanded {
+        grid-column: span 3;
+    }
+}
+
+@media (min-width: 1280px) { /* xl */
+    .product-card.expanded {
+        grid-column: span 4;
+    }
+}

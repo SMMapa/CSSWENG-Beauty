@@ -11,24 +11,18 @@
 <body>
     <div id="content">
         <div id="logo"><img src="assets/Simply_Beauty_Ph_header_360x.png"></div>
-        <div id="data-pane">
-            <h2>Admin Login</h2>
-           <div id="user-entry"><label for="username">Username: </label> <input
-            type="text"
-            id="username"
-            name="username"
-            required
-            minlength="4"
-            maxlength="8" /></div>
+        <form action="/user_dashboard" id="data-pane" method="POST">
+            <div id="user-entry">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username"/>
+            </div>
             <br>
-           <div id="password-entry"><label for="password">Password: </label><input
-            type="password"
-            id="password"
-            name="password"
-            required
-            minlength="8"/></div>
+            <div id="password-entry">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password"/>
+            </div>
             <br>
-            <div id="submit">Submit</div>
-        </div>
+            <button type="submit" id="submit" href="/user_dashboard">Submit</button>
+        </form>
     </div>
 </body>
