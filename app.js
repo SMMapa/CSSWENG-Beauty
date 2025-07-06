@@ -22,7 +22,7 @@ function initializeHandlebars(){
         // helpers: {} 
     }));
     app.set("view engine", "hbs");
-    app.set("views", "./src/views");
+    app.set('views', path.join(__dirname, 'src', 'views')); 
 }
 
 async function finalClose(){
