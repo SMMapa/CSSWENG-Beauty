@@ -6,13 +6,13 @@ const exphbs = require('express-handlebars');
 const path = require('path');
 
 const router = require('./src/routes/router.js');
-const { connect, disconnect }= require('./src/models/db.js');
+const { connect, disconnect }= require('./config/db.js');
 
 const app = express();
 
 function initializeStaticFiles(){
     app.use(express.static(path.join(__dirname, 'public')));
-    app.use('/uploads', express.static('public/uploads'));
+    app.use('/assets', express.static('public/assets'));
 }
 
 function initializeHandlebars(){
@@ -31,7 +31,6 @@ async function finalClose(){
 }
 
 async function main(){
-
     initializeStaticFiles();
     initializeHandlebars();
 
@@ -42,7 +41,6 @@ async function main(){
     app.listen(process.env.SERVER_PORT, async () => {
         console.log(`Express server is now listening on port ${process.env.SERVER_PORT}`);
         try {
-            
             await connect();
             console.log(`Now connected to MongoDB`);
             

@@ -4,6 +4,7 @@ const router = express.Router();
 
 const { handleLoginPageRequest } = require('../controllers/loginController');
 
-router.get('/', handleLoginPageRequest); 
+router.get('/', handleLoginPageRequest);
+
 
 module.exports = router;
