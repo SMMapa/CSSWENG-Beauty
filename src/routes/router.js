@@ -7,7 +7,7 @@ const { getLoginPage, handleLoginRequest } = require('../controllers/loginContro
 const { getUserDashboard } = require('../controllers/userController');
 
 router.get('/', getLoginPage);
-router.post('/user_dashboard', handleLoginRequest);
+router.post('/login', handleLoginRequest);
 router.get('/user_dashboard', getUserDashboard);
 
 module.exports = router;

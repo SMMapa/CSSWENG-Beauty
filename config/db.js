@@ -14,6 +14,7 @@ async function connect() {
     const conn = await mongoose.connect(process.env.MONGODB_URI);
 
     console.log(`MongoDB Connected: ${conn.connection.host}`);
+    console.log(`Link: localhost:${process.env.SERVER_PORT}`);
   } catch (err) {
     console.error('Database connection failed: ', err.message);
     process.exit(1);
