@@ -16,6 +16,22 @@ function toggleProductDetails(cardElement) {
     const stockValue = stockMatch ? parseInt(stockMatch[1], 10) : 0;
     const isLowStock = stockValue <= LOW_STOCK_THRESHOLD;
 
+    // This will render the warning icon immediately if stock is low
+    allProductCards.forEach(card => {
+        const stockElement = card.querySelector(".product-stock");
+        const warningIcon = card.querySelector(".warning-icon");
+
+        if (!stockElement || !warningIcon) return;
+
+        const stockText = stockElement.textContent;
+        const stockMatch = stockText.match(/Stock:\s*(\d+)/);
+        const stockValue = stockMatch ? parseInt(stockMatch[1], 10) : 0;
+
+        if (stockValue <= LOW_STOCK_THRESHOLD) {
+            warningIcon.classList.remove("hidden");
+        }
+    });
+
     if (cardElement.classList.contains('expanded')) {
         // Card is currently expanded, so collapse it
 
@@ -38,7 +54,7 @@ function toggleProductDetails(cardElement) {
 
             // Show stock and warning icon (if applicable)
             productStockElement.classList.remove('hidden');
-            if (warningIcon) warningIcon.classList.remove('hidden');
+            // if (warningIcon) warningIcon.classList.remove('hidden');
             productStockElement.style.opacity = '1';
             productStockElement.style.height = 'auto'; // Revert height
             productStockElement.style.marginBottom = '0.5rem'; // Revert margin
@@ -83,7 +99,14 @@ function toggleProductDetails(cardElement) {
         productStockElement.style.opacity = '0';
         productStockElement.style.height = '0';
         productStockElement.style.marginBottom = '0';
-        if (warningIcon) warningIcon.classList.add('hidden'); // Fully hide warning icon immediately
+        if (warningIcon) {
+            if (isLowStock) {
+                warningIcon.classList.remove('hidden'); // Show warning icon for low stock
+            } else {
+                warningIcon.classList.add('hidden'); // Hide it for normal stock
+            }
+        }
+
 
         // Show low stock message if applicable
         if (isLowStock) {
