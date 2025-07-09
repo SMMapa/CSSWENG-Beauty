@@ -1,5 +1,11 @@
 # CSSWENG-Beauty
 
+### For admins:
+1.  If you changed any value in our sample data, you may run the seed script to update the databse by running:
+    ```bash
+    npm run seed
+    ```
+
 ### How to Run the Application Locally
 1.  Clone the git repo, through GitHub or terminal by running the ff:
     ```bash
