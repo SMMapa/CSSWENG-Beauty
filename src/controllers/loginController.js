@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt');
 const User = require('../models/User');
+const { getVendorProducts } = require('./productController');
 
 async function getLoginPage(req, res) {
     res.render('login', {
@@ -49,22 +50,44 @@ async function handleLoginRequest(req, res) {
             });
         }
 
-        // Password is correct, redirect to dashboard
-        console.log('User logged in:', {
-            user_id: user.user_id,
-            name: user.full_name,
-            email: user.email,
-            role: user.role
-        });
-
-        res.render('user_dashboard', {
-                name: user.full_name,
-            }
-        );
-
+        switch(user.role) {
+            case "employee":
+                try {
+                    req.session.user = {
+                    id: user._id,
+                    user_id: user.user_id,
+                    full_name: user.full_name,
+                    email: user.email,
+                    role: user.role
+                };
+                    return res.redirect("/user_dashboard");
+                } catch (err) {
+                    console.error(err);
+                    return res.status(403).send(err.message);
+                }
+            case "vendor":
+                try {
+                    req.session.user = {
+                    id: user._id,
+                    user_id: user.user_id,
+                    full_name: user.full_name,
+                    email: user.email,
+                    role: user.role,
+                    brand_name: user.brand_name
+                };
+                    return res.redirect("/vendor_dashboard");
+                } catch (err) {
+                    console.error(err);
+                    return res.status(403).send(err.message);
+                }
+            case "admin":
+                break;
+            default:
+               return res.status(500).render("Who are you?");
+        }
     } catch (error) {
         console.error('Error during login:', error);
-        res.render('login', {
+        return res.render('login', {
             title: 'Login',
             error: 'An error occurred during login. Please try again.',
             success: null

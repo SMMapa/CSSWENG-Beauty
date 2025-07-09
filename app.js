@@ -35,8 +35,19 @@ async function main(){
     initializeHandlebars();
 
     app.use(express.json());
-    app.use(express.urlencoded({ extended: true })); 
-    app.use(router);  
+    app.use(express.urlencoded({ extended: true }));
+
+    app.use(session({
+        secret: process.env.SESSION_SECRET || 'key',
+        resave: false,
+        saveUninitialized: false,
+        cookie: {
+            secure: false,
+            httpOnly: true
+        }
+    }));
+
+    app.use(router);
 
     app.listen(process.env.SERVER_PORT, async () => {
         console.log(`Express server is now listening on port ${process.env.SERVER_PORT}`);
