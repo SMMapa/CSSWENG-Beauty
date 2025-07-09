@@ -28,8 +28,15 @@ h2 {
     color: white;
     text-align: center;
     font-family:'Dosis';
-    
+    border-radius: 0;
+    width: 100%;
+    height: 30%;
+    margin: auto;
     padding: 1%;
+}
+
+#username {
+    font-family:'Dosis';
 }
 
 .success-message {
