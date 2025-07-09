@@ -8,8 +8,7 @@
     "sku": "8213367688701",
     "category": "Foundation",
     "price": 33.23,
-    "stock_qty": 161,
-    "image_url": "https://www.lorempixel.com/1007/987"
+    "stock_qty": 161
   },
   {
     "product_id": "prod_2",
@@ -20,8 +19,7 @@
     "sku": "9015040607899",
     "category": "Lipstick",
     "price": 17.19,
-    "stock_qty": 149,
-    "image_url": "https://placeimg.com/884/575/any"
+    "stock_qty": 149
   },
   {
     "product_id": "prod_3",
@@ -32,8 +30,7 @@
     "sku": "7684332198814",
     "category": "Mascara",
     "price": 79.5,
-    "stock_qty": 198,
-    "image_url": "https://dummyimage.com/184x724"
+    "stock_qty": 198
   },
   {
     "product_id": "prod_4",
@@ -44,8 +41,7 @@
     "sku": "2926242369348",
     "category": "Eyeliner",
     "price": 5.51,
-    "stock_qty": 42,
-    "image_url": "https://placekitten.com/733/986"
+    "stock_qty": 42
   },
   {
     "product_id": "prod_5",
@@ -56,8 +52,7 @@
     "sku": "9336841676816",
     "category": "Blush",
     "price": 32.13,
-    "stock_qty": 17,
-    "image_url": "https://placekitten.com/650/938"
+    "stock_qty": 17
   },
   {
     "product_id": "prod_6",
@@ -68,8 +63,7 @@
     "sku": "7300170237552",
     "category": "Concealer",
     "price": 41.59,
-    "stock_qty": 110,
-    "image_url": "https://placeimg.com/897/978/any"
+    "stock_qty": 110
   },
   {
     "product_id": "prod_7",
@@ -80,8 +74,7 @@
     "sku": "6607276849216",
     "category": "Eyeshadow",
     "price": 84.57,
-    "stock_qty": 28,
-    "image_url": "https://placekitten.com/352/465"
+    "stock_qty": 28
   },
   {
     "product_id": "prod_8",
@@ -92,8 +85,7 @@
     "sku": "8122994392311",
     "category": "Highlighter",
     "price": 76.74,
-    "stock_qty": 35,
-    "image_url": "https://placekitten.com/622/276"
+    "stock_qty": 35
   },
   {
     "product_id": "prod_9",
@@ -104,8 +96,7 @@
     "sku": "3664023423504",
     "category": "Primer",
     "price": 64.59,
-    "stock_qty": 20,
-    "image_url": "https://www.lorempixel.com/479/889"
+    "stock_qty": 20
   },
   {
     "product_id": "prod_10",
@@ -116,7 +107,6 @@
     "sku": "2722213493414",
     "category": "Setting Spray",
     "price": 53.54,
-    "stock_qty": 15,
-    "image_url": "https://www.lorempixel.com/257/1001"
+    "stock_qty": 15
   }
 ]

@@ -11,7 +11,7 @@ const productSchema = new Schema({
     category: { type: String, required: true },
     price: { type: Number, required: true, min: 0 },
     stock_qty: { type: Number, required: true, min: 0 },
-    image_url: { type: String }
+    image_url: { type: String, default: "https://placehold.co/600x400" }
 });
 
 module.exports = mongoose.model('Product', productSchema);

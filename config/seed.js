@@ -17,7 +17,7 @@ database.connect();
 
 // Seed users
 async function seedUsers() {
-    const usersData = JSON.parse(fs.readFileSync(path.join(__dirname, '../../seed/user.json'), 'utf-8'));
+    const usersData = JSON.parse(fs.readFileSync(path.join(__dirname, '../seed/user.json'), 'utf-8'));
     const users = await Promise.all(usersData.map(async user => {
       if (!user.password_hash) {
         throw new Error(`Missing password for user: ${user.username}`);
@@ -36,7 +36,7 @@ async function seedUsers() {
 
 // Seed categories
 async function seedCategories() {
-    const categories = JSON.parse(fs.readFileSync(path.join(__dirname, '../../seed/category.json'), 'utf-8'));
+    const categories = JSON.parse(fs.readFileSync(path.join(__dirname, '../seed/category.json'), 'utf-8'));
     await Category.deleteMany();
     await Category.insertMany(categories);
     console.log('Categories seeded successfully.');
@@ -44,7 +44,7 @@ async function seedCategories() {
 
 // Seed products
 async function seedProducts() {
-    const products = JSON.parse(fs.readFileSync(path.join(__dirname, '../../seed/product.json'), 'utf-8'));
+    const products = JSON.parse(fs.readFileSync(path.join(__dirname, '../seed/product.json'), 'utf-8'));
     await Product.deleteMany();
     await Product.insertMany(products);
     console.log('Products seeded successfully.');
@@ -52,7 +52,7 @@ async function seedProducts() {
 
 // Seed storage locations
 async function seedStorage() {
-  const storages = JSON.parse(fs.readFileSync(path.join(__dirname, '../../seed/storage.json'), 'utf-8'));
+  const storages = JSON.parse(fs.readFileSync(path.join(__dirname, '../seed/storage.json'), 'utf-8'));
   await Storage.deleteMany();
   await Storage.insertMany(storages);
   console.log('Storages seeded successfully.');
@@ -60,7 +60,7 @@ async function seedStorage() {
 
 // Seed product-storage relationships
 async function seedProductStorage() {
-  const productStorages = JSON.parse(fs.readFileSync(path.join(__dirname, '../../seed/product_storage.json'), 'utf-8'));
+  const productStorages = JSON.parse(fs.readFileSync(path.join(__dirname, '../seed/product_storage.json'), 'utf-8'));
   await ProductStorage.deleteMany();
   await ProductStorage.insertMany(productStorages);
   console.log('ProductStorage seeded successfully.');
