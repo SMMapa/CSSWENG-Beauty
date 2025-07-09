@@ -51,8 +51,10 @@
         </section>
 
         <section id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-6">
+            <p id="no-results" class="text-gray-500 text-center hidden">No items found.</p>
             {{#each p }}
-            <div class="product-card relative bg-white p-4 rounded-2xl shadow-md flex flex-col items-center text-center cursor-pointer hover:-translate-y-1 hover:shadow-xl transition-all duration-300" onclick="toggleProductDetails(this)">
+            <div class="product-card relative bg-white p-4 rounded-2xl shadow-md flex flex-col items-center text-center cursor-pointer hover:-translate-y-1 hover:shadow-xl transition-all duration-300" onclick="toggleProductDetails(this)"
+            data-name="{{ name }}">
                 <!-- might have to add some kind of functionality to accept in-server assets or assets taken from a link/CDNs -->
                 <img src="{{image_url}}" alt="{{name}}" class="rounded-xl mb-3 object-cover w-full h-36">
                 <div class="low-stock-message bg-yellow-400 text-gray-900 font-semibold px-4 py-2 rounded-lg text-sm text-center w-full max-w-[200px]">
@@ -104,5 +106,6 @@
     {{> help_button }}
 
     <script src="scripts/card_anim.js" defer></script>
+    <script src="scripts/vendor_search.js"></script>
 </body>
 </html>

@@ -62,7 +62,7 @@ body {
     color: #718096;
 }
 
-.product-card.expanded .product-details-grid .detail-value {
+.product-card.expanded .product-details-grid .detail-value .data-name {
     color: #2d3748;
 }
 
