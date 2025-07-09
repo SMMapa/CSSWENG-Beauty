@@ -1,0 +1,11 @@
+<div class="product-card bg-white p-4 rounded-2xl shadow-md flex flex-col items-center text-center cursor-pointer hover:-translate-y-1 hover:shadow-xl transition-all duration-300">
+                <img src="/assets/{{prodid}}" alt="{{prodname}}" class="rounded-xl mb-3 object-cover w-full h-36">
+                {{#if lowstock}}
+                <div class="low-stock-message bg-yellow-400 text-gray-900 font-semibold px-4 py-2 rounded-lg text-sm text-center w-full max-w-[200px]">
+                    Low Stock!
+                </div>
+                {{/if}}
+                <h3 class="font-semibold text-gray-800 text-lg mb-1">{{prodname}}</h3>
+                <p class="text-gray-600 text-sm">Stock: {{stock}}</p>
+                
+                </div>
