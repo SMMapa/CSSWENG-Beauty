@@ -2,3 +2,5 @@
 node_modules
 .DS_Store
 start.bat
+src\views\vendor hbs test.html
+vendor_dashboard_old.html
