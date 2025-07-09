@@ -52,11 +52,15 @@ async function handleLoginRequest(req, res) {
         // Password is correct, redirect to dashboard
         console.log('User logged in:', {
             user_id: user.user_id,
+            name: user.full_name,
             email: user.email,
             role: user.role
         });
 
-        res.redirect('/user_dashboard');
+        res.render('user_dashboard', {
+                name: user.full_name,
+            }
+        );
 
     } catch (error) {
         console.error('Error during login:', error);
