@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "seed": "node public/scripts/seed.js"
+    "seed": "node config/seed.js"
   },
   "keywords": [],
   "author": "",
