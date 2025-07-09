@@ -7,7 +7,9 @@ const userSchema = new Schema({
     password_hash: { type: String, required: true },
     role: { type: String, required: true, enum: ['admin', 'vendor', 'employee'] },
     full_name: { type: String, required: true },
-    brand_name: { type: String },
+    brand_name: { type: String, required: function () {
+        return this.role === 'vendor';
+    }},
     phone: { type: String },
     created_at: { type: Date, default: Date.now }
 });
