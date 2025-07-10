@@ -19,7 +19,7 @@ async function getUserDashboard(req, res) {
     printDebug(user);
 
     res.render('user_dashboard', {
-        name: user.full_name
+        u: user
     });
 }
 

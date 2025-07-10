@@ -19,7 +19,14 @@ function initializeHandlebars(){
     app.engine("hbs", exphbs.engine({
         extname: "hbs",
         defaultLayout: false,
-        partialsDir: path.join(__dirname, 'src', 'views', 'partials')
+        partialsDir: path.join(__dirname, 'src', 'views', 'partials'),
+        helpers: {
+            eq: function (a, b) {
+                if (typeof a === 'string') a = a.trim();
+                if (typeof b === 'string') b = b.trim();
+                return a === b;
+            }
+        }
     }));
     app.set("view engine", "hbs");
     app.set('views', path.join(__dirname, 'src', 'views')); 

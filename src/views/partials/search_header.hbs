@@ -1,6 +1,14 @@
 <div class="flex-1 p-8">
     <header class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
-        <h1 class="text-3xl font-semibold text-gray-800 mb-4 sm:mb-0">{{ u.brand_name }}</h1>
+        <h1 class="text-3xl font-semibold text-gray-800 mb-4 sm:mb-0">
+            {{#if (eq role "employee") }}
+                Welcome, {{ full_name }}!
+            {{else if (eq role "vendor") }}
+                {{ brand_name }}
+            {{else }}
+                Who are you?
+            {{/if}}
+        </h1>
         <div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4 w-full sm:w-auto">
             <button class="bg-gray-200 text-gray-800 px-6 py-2 rounded-xl font-medium flex items-center justify-center shadow-sm hover:bg-gray-300 transition-colors duration-200">
                 <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
@@ -37,3 +45,5 @@
         </div>
     </section>
 </section>
+
+<p id="no-results" class="text-gray-500 text-center hidden">No items found.</p>

@@ -1,7 +1,7 @@
 # CSSWENG-Beauty
 
 ### For admins:
-1.  If you changed any value in our sample data, you may run the seed script to update the databse by running:
+1.  If you changed any value in our sample data, you may run the seed script to update the database by running:
     ```bash
     npm run seed
     ```
