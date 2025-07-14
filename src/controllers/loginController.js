@@ -60,7 +60,7 @@ async function handleLoginRequest(req, res) {
                     email: user.email,
                     role: user.role
                 };
-                    return res.redirect("/user_dashboard");
+                    return res.redirect("/user/manage_products");
                 } catch (err) {
                     console.error(err);
                     return res.status(403).send(err.message);
@@ -75,13 +75,25 @@ async function handleLoginRequest(req, res) {
                     role: user.role,
                     brand_name: user.brand_name
                 };
-                    return res.redirect("/vendor_dashboard");
+                    return res.redirect("/vendor/product_dashboard");
                 } catch (err) {
                     console.error(err);
                     return res.status(403).send(err.message);
                 }
             case "admin":
-                break;
+                try {
+                    req.session.user = {
+                    id: user._id,
+                    user_id: user.user_id,
+                    full_name: user.full_name,
+                    email: user.email,
+                    role: user.role,
+                };
+                    return res.redirect("/admin/manage_users");
+                } catch (err) {
+                    console.error(err);
+                    return res.status(403).send(err.message);
+                }
             default:
                return res.status(500).render("Who are you?");
         }
